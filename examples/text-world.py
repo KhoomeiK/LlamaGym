@@ -76,7 +76,7 @@ if __name__ == "__main__":
     )
 
     env_id = textworld.gym.register_game(
-        "tw_games/custom_game.z8",
+        "examples/tw_games/custom_game.z8",
         max_episode_steps=50,
         request_infos=textworld.EnvInfos(
             admissible_commands=True,
