@@ -13,8 +13,10 @@ transformers = "^4.36.2"
 trl = "^0.7.9"
 gymnasium = "^0.29.1"
 peft = "^0.7.1"
-accelerate
-bitsandbytes
+accelerate = "^0.21.0"
+bitsandbytes = "^0.40.0"
+textworld = "^1.6.1"
+scipy = "^1.12.0"
 
 
 [tool.poetry.group.dev.dependencies]
