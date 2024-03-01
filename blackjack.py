@@ -1,3 +1,4 @@
+import os
 from tqdm import trange
 
 from transformers import AutoTokenizer
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         "generate/temperature": 0.9
     }
     device = "cuda:0"
-    HF_TOKEN = None
+    HF_TOKEN = os.environ.get("HF_TOKEN")
 
     lora_config = LoraConfig(
         **{key.split('/')[-1]: value for key, value in hyperparams.items() if key.startswith('lora/')}
