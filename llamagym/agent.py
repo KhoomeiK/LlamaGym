@@ -11,7 +11,20 @@ from trl import (
 
 
 class Agent(ABC):
-    def __init__(self, model, tokenizer, device, generate_config_dict, ppo_config_dict):
+    def __init__(
+        self, model, tokenizer, device, generate_config_dict=None, ppo_config_dict=None
+    ):
+        if generate_config_dict is None:
+            generate_config_dict = {
+                "max_new_tokens": 32,
+                "do_sample": True,
+                "top_p": 0.6,
+                "top_k": 0,
+                "temperature": 0.9,
+            }
+        if ppo_config_dict is None:
+            ppo_config_dict = {"batch_size": 16}
+
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
