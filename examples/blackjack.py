@@ -6,7 +6,8 @@ from peft import LoraConfig
 from trl import AutoModelForCausalLMWithValueHead
 
 import gymnasium as gym
-from llamagym.agent import Agent
+from llamagym import Agent
+
 
 class BlackjackAgent(Agent):
     def get_system_prompt(self) -> str:
@@ -27,6 +28,7 @@ Decide whether to stick or hit by writing "Action: 0" or "Action: 1" respectivel
         else:
             return int(digits[-1])
 
+
 if __name__ == "__main__":
     hyperparams = {
         "model_name": "meta-llama/Llama-2-7b-chat-hf",
@@ -44,32 +46,44 @@ if __name__ == "__main__":
         "generate/do_sample": True,
         "generate/top_p": 0.6,
         "generate/top_k": 0,
-        "generate/temperature": 0.9
+        "generate/temperature": 0.9,
     }
     device = "cuda:0"
     HF_TOKEN = os.environ.get("HF_TOKEN")
 
     lora_config = LoraConfig(
-        **{key.split('/')[-1]: value for key, value in hyperparams.items() if key.startswith('lora/')}
+        **{
+            key.split("/")[-1]: value
+            for key, value in hyperparams.items()
+            if key.startswith("lora/")
+        }
     )
 
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         pretrained_model_name_or_path=hyperparams["model_name"],
         peft_config=lora_config,
         load_in_8bit=hyperparams["load_in_8bit"],
-        token=HF_TOKEN
+        token=HF_TOKEN,
     ).to(device)
     tokenizer = AutoTokenizer.from_pretrained(hyperparams["model_name"], token=HF_TOKEN)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     model.pretrained_model.resize_token_embeddings(len(tokenizer))
-    
-    agent = BlackjackAgent(model, tokenizer, device,
-                           {key: value for key, value in hyperparams.items() if key.startswith('generate/')}, 
-                           {'batch_size': hyperparams['batch_size']})
-    env = gym.make(hyperparams['env'], natural=False, sab=False)
 
-    for episode in trange(hyperparams['episodes']):
-        observation, info = env.reset(seed=hyperparams['seed'])
+    agent = BlackjackAgent(
+        model,
+        tokenizer,
+        device,
+        {
+            key: value
+            for key, value in hyperparams.items()
+            if key.startswith("generate/")
+        },
+        {"batch_size": hyperparams["batch_size"]},
+    )
+    env = gym.make(hyperparams["env"], natural=False, sab=False)
+
+    for episode in trange(hyperparams["episodes"]):
+        observation, info = env.reset(seed=hyperparams["seed"])
         done = False
 
         while not done:
@@ -77,5 +91,5 @@ if __name__ == "__main__":
             observation, reward, terminated, truncated, info = env.step(action)
             agent.assign_reward(reward)
             done = terminated or truncated
-        
+
         train_stats = agent.terminate_episode()
