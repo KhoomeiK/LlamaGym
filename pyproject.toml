@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "llamagym"
+version = "0.1.0"
+description = "Fine-tuning LLM agents with RL"
+authors = ["Rohan Pandey"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "^2.1.2"
+transformers = "^4.36.2"
+trl = "^0.7.9"
+gymnasium = "^0.29.1"
+peft = "^0.7.1"
+accelerate
+bitsandbytes
+
+
+[tool.poetry.group.dev.dependencies]
+wandb = "^0.16.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
