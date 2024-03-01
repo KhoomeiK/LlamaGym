@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/khoomeik/LlamaGym/main/llamagym.png" height="400" alt="Llama Gym" />
+  <img src="https://raw.githubusercontent.com/khoomeik/LlamaGym/main/llamagym.png" height="250" alt="Llama Gym" />
 </p>
 <p align="center">
   <em>Fine-tune LLM agents with online reinforcement learning</em>
@@ -18,6 +18,8 @@ Fine-tuning an LLM-based agent to play in a Gym-style environment with RL has ne
 
 First, implement 3 abstract methods on the Agent class:
 ```python
+from llamagym import Agent
+
 class BlackjackAgent(Agent):
     def get_system_prompt(self) -> str:
         return "You are an expert blackjack player."
