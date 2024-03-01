@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "llamagym"
 version = "0.1.0"
-description = "Fine-tuning LLM agents with RL"
+description = "Fine-tune LLM agents with online reinforcement learning"
 authors = ["Rohan Pandey"]
 license = "MIT"
 readme = "README.md"
