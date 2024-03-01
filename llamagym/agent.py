@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List, Dict
 
 import gymnasium as gym
 import torch
@@ -9,11 +10,11 @@ from trl import (
 )
 
 class Agent(ABC):
-    def __init__(self, model, tokenizer, generate_config_dict, ppo_config_dict):
+    def __init__(self, model, tokenizer, device, generate_config_dict, ppo_config_dict):
         self.model = model
         self.tokenizer = tokenizer
+        self.device = device
         self.generate_config_dict = generate_config_dict
-        self.device = self.model.device
         self.model_ref = create_reference_model(model)
         self.ppo_config = PPOConfig(batch_size=ppo_config_dict['batch_size'])
         self.ppo_trainer = PPOTrainer(self.ppo_config, model, self.model_ref, tokenizer)
@@ -40,7 +41,7 @@ class Agent(ABC):
     def extract_action(self, response: str) -> gym.core.ActType:
         pass
 
-    def llm(self, messages) -> str:
+    def llm(self, messages: List[Dict[str, str]]) -> str:
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )

@@ -63,8 +63,8 @@ if __name__ == "__main__":
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     model.pretrained_model.resize_token_embeddings(len(tokenizer))
     
-    agent = BlackjackAgent(model, tokenizer, 
-                           {key: value for key, value in hyperparams if key.startswith('generate/')}, 
+    agent = BlackjackAgent(model, tokenizer, device,
+                           {key: value for key, value in hyperparams.items() if key.startswith('generate/')}, 
                            {'batch_size': hyperparams['batch_size']})
     env = gym.make(hyperparams['env'], natural=False, sab=False)
 
