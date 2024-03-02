@@ -5,8 +5,16 @@
   <em>Fine-tune LLM agents with online reinforcement learning</em>
 </p>
 <p align="center">
-  <a href="https://twitter.com/khoomeik">🐦 Twitter</a>
+    <a href="https://pypi.org/project/llamagym/" target="_blank">
+        <img alt="Python" src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
+        <img alt="Version" src="https://img.shields.io/pypi/v/llamagym?style=for-the-badge&color=3670A0">
+    </a>
 </p>
+<p align="center">
+<a href="https://reworkd.ai/">🔗 Agents for Web Data Extraction</a>
+<span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+<a href="https://twitter.com/khoomeik">🐦 Twitter</a>
+
 
 # LlamaGym
 LLM agents are called *agents*—they *should* be trainable with RL in classic [Gym](https://github.com/Farama-Foundation/Gymnasium)-style environments. But if you try, you'd find it's quite a bit of code to handle LLM conversation context, episode batches, reward assignment, PPO setup, and more.
