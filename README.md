@@ -66,6 +66,8 @@ for episode in trange(5000):
 Note: the above code snippets are mildly simplified but a fully working example is available in `examples/blackjack.py`.
 
 ## TODO
+- [ ] add toggle for train vs inference mode
 - [ ] set up logging on examples
+  - [ ] approx KL, sample completions, sliding window mean reward
 - [ ] understand the PPO logs and fix hyperparams
 - [ ] run wandb hyperparam sweep
