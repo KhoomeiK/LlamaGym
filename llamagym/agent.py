@@ -119,21 +119,32 @@ class Agent(ABC):
 
         return queries, responses, rewards
 
-    def terminate_episode(self):
-        queries, responses, rewards = self.format_episode_for_ppo(
-            self.current_episode_messages, self.current_episode_rewards
-        )
-        self.current_batch["queries"].extend(queries)
-        self.current_batch["responses"].extend(responses)
-        self.current_batch["rewards"].extend(rewards)
-
-        if len(self.current_batch["queries"]) >= self.ppo_config.batch_size:
-            train_stats = self.train_batch(
-                self.current_batch["queries"],
-                self.current_batch["responses"],
-                self.current_batch["rewards"],
+    def terminate_episode(self, train=True):
+        if train:
+            queries, responses, rewards = self.format_episode_for_ppo(
+                self.current_episode_messages, self.current_episode_rewards
             )
-            return train_stats
+
+        self.current_episode_messages = [
+            {
+                "role": "system",
+                "content": self.get_system_prompt(),
+            }
+        ]
+        self.current_episode_rewards = []
+
+        if train:
+            self.current_batch["queries"].extend(queries)
+            self.current_batch["responses"].extend(responses)
+            self.current_batch["rewards"].extend(rewards)
+    
+            if len(self.current_batch["queries"]) >= self.ppo_config.batch_size:
+                train_stats = self.train_batch(
+                    self.current_batch["queries"],
+                    self.current_batch["responses"],
+                    self.current_batch["rewards"],
+                )
+                return train_stats
 
     def train_batch(self, batch_queries, batch_responses, batch_rewards):
         if len(queries) > self.ppo_config.batch_size:
