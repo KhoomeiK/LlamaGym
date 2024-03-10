@@ -1,3 +1,4 @@
+import re
 import os
 from tqdm import trange
 import wandb
@@ -19,9 +20,9 @@ class TextworldAgent(Agent):
         return observation
 
     def extract_action(self, response: str):
-        if "command: " not in response:
-            raise ValueError("No action chosen")
-        command = response.split("command: ")[-1]
+        command_match = re.search(r"(C|c)ommand: (.+?)(?=\n|$)", response)
+        command = command_match.group(2) if command_match else None
+
         return command
 
 
@@ -43,7 +44,7 @@ if __name__ == "__main__":
         "generate/top_k": 0,
         "generate/temperature": 0.9,
     }
-    wandb_run = wandb.init(project="LlamaGym", config=hyperparams)
+    wandb_run = wandb.init(project=os.environ.get("WANDB_PROJECT"), config=hyperparams)
     device = "cuda:0"
     HF_TOKEN = os.environ.get("HF_TOKEN")
 
@@ -74,8 +75,9 @@ if __name__ == "__main__":
             if key.startswith("generate/")
         },
         {
-            "batch_size": hyperparams["batch_size"]
-        },  # TODO: figure out minibatch size issue
+            "batch_size": hyperparams["batch_size"],
+            "mini_batch_size": hyperparams["batch_size"],
+        },
     )
 
     env_id = textworld.gym.register_game(
@@ -105,7 +107,8 @@ if __name__ == "__main__":
             "message_ct": len(agent.current_episode_messages),
             "episode_messages": agent.current_episode_messages[-1],
         }
-        episode_stats.update(agent.terminate_episode())  # add train stats
+        train_stats = agent.terminate_episode()
+        episode_stats.update(train_stats)
         wandb.log(episode_stats)
 
     env.close()
