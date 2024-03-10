@@ -72,6 +72,18 @@ Note: the above code snippets are mildly simplified but a fully working example 
   - [Lamorel: Language Models for Reinforcement Learning](https://github.com/flowersteam/lamorel)
 - [True Knowledge Comes from Practice: Aligning LLMs with Embodied Environments via Reinforcement Learning](https://github.com/WeihaoTan/TWOSOME)
 
+## Citation
+```
+bibtex
+@misc{pandey2024llamagym,
+  title        = {LlamaGym: Fine-tune LLM agents with Online Reinforcement Learning},
+  author       = {Rohan Pandey},
+  year         = {2024},
+  howpublished = {GitHub},
+  url          = {https://github.com/KhoomeiK/LlamaGym}
+}
+```
+
 ## TODO
 - [ ] add toggle for train vs inference mode
 - [ ] set up logging on examples
