@@ -24,7 +24,10 @@ OpenAI created [Gym](https://github.com/Farama-Foundation/Gymnasium) to standard
 LlamaGym seeks to simplify fine-tuning LLM agents with RL. Right now, it's a single `Agent` abstract class that handles all the issues mentioned above, letting you quickly iterate and experiment with agent prompting & hyperparameters across any Gym environment.
 
 ## Usage
-Fine-tuning an LLM-based agent to play in a Gym-style environment with RL has never been easier!
+Fine-tuning an LLM-based agent to play in a Gym-style environment with RL has never been easier! Once you install LlamaGym...
+```
+pip install llamagym
+```
 
 First, implement 3 abstract methods on the Agent class:
 ```python
@@ -65,7 +68,11 @@ for episode in trange(5000):
     train_stats = agent.terminate_episode() # trains if batch is full
 ```
 
-Note: the above code snippets are mildly simplified but a fully working example is available in `examples/blackjack.py`.
+Some reminders:
+- above code snippets are mildly simplified above but a fully working example is available in [`examples/blackjack.py`](https://github.com/KhoomeiK/LlamaGym/blob/main/examples/blackjack.py)
+- getting online RL to converge is notoriously difficult so you'll have to mess with hyperparameters to see improvement
+- our implementation values simplicity so is not as compute efficient as e.g. [Lamorel](https://github.com/flowersteam/lamorel), but easier to start playing around with
+- LlamaGym is a weekend project and still a WIP, but we love contributions!
 
 ## Relevant Work
 - [Grounding Large Language Models with Online Reinforcement Learning](https://github.com/flowersteam/Grounding_LLMs_with_online_RL)
