@@ -13,7 +13,7 @@
 <p align="center">
 <a href="https://reworkd.ai/">🔗 Agents for Web Data Extraction</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-<a href="https://twitter.com/khoomeik">🐦 Twitter</a>
+<a href="https://x.com/khoomeik/status/1766805213644800011">🐦 Twitter</a>
 
 
 # LlamaGym
