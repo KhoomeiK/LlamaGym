@@ -146,6 +146,8 @@ class Agent(ABC):
                 )
                 return train_stats
 
+        return {}
+
     def train_batch(self, batch_queries, batch_responses, batch_rewards):
         if len(queries) > self.ppo_config.batch_size:
             queries = batch_queries[: self.ppo_config.batch_size]

@@ -58,7 +58,6 @@ if __name__ == "__main__":
             if key.startswith("lora/")
         }
     )
-
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         pretrained_model_name_or_path=hyperparams["model_name"],
         peft_config=lora_config,

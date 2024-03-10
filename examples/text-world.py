@@ -7,6 +7,8 @@ from transformers import AutoTokenizer
 from peft import LoraConfig
 from trl import AutoModelForCausalLMWithValueHead
 
+import wandb
+
 
 class TextworldAgent(Agent):
     def get_system_prompt(self) -> str:
@@ -42,6 +44,7 @@ if __name__ == "__main__":
         "generate/top_k": 0,
         "generate/temperature": 0.9,
     }
+    wandb_run = wandb.init(project="LlamaGym", config=hyperparams)
     device = "cuda:0"
     HF_TOKEN = os.environ.get("HF_TOKEN")
 
@@ -52,7 +55,6 @@ if __name__ == "__main__":
             if key.startswith("lora/")
         }
     )
-
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         pretrained_model_name_or_path=hyperparams["model_name"],
         peft_config=lora_config,
@@ -91,10 +93,18 @@ if __name__ == "__main__":
 
         while not done:
             action = agent.act(observation)
+            wandb.log({"action": action})
             observation, reward, done, info = env.step(action)
             env.render()
             agent.assign_reward(reward)
 
-        train_stats = agent.terminate_episode()
+        episode_stats = {
+            "episode": episode,
+            "total_return": sum(agent.current_episode_rewards),
+            "message_ct": len(agent.current_episode_messages),
+            "episode_messages": agent.current_episode_messages[-1],
+        }
+        episode_stats.update(agent.terminate_episode()) # add train stats
+        wandb.log(episode_stats)
 
     env.close()
