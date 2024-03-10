@@ -23,14 +23,14 @@ class Agent(ABC):
                 "temperature": 0.9,
             }
         if ppo_config_dict is None:
-            ppo_config_dict = {"batch_size": 16}
+            ppo_config_dict = {"batch_size": 16, "mini_batch_size": 16}
 
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
         self.generate_config_dict = generate_config_dict
         self.model_ref = create_reference_model(model)
-        self.ppo_config = PPOConfig(batch_size=ppo_config_dict["batch_size"])
+        self.ppo_config = PPOConfig(**ppo_config_dict)
         self.ppo_trainer = PPOTrainer(self.ppo_config, model, self.model_ref, tokenizer)
 
         self.current_batch = {"queries": [], "responses": [], "rewards": []}
@@ -70,8 +70,8 @@ class Agent(ABC):
         outputs = self.tokenizer.batch_decode(
             generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
         )
+        response = outputs[0].split("[/INST]")[-1].strip()
 
-        response = outputs[0].split("<|assistant|>\n")[-1]
         return response
 
     def act(self, observation):
@@ -92,15 +92,13 @@ class Agent(ABC):
 
     def format_episode_for_ppo(self, messages, rewards):
         queries, responses = [], []
-        for i in range(1, len(messages), 2):
+        for i in range(2, len(messages), 2):
             prompt = self.tokenizer.apply_chat_template(
                 messages[: i + 1], tokenize=False, add_generation_prompt=False
             )
-            conversation_chunks = prompt.split("<|assistant|>\n")
-            query = (
-                "<|assistant|>\n".join(conversation_chunks[:-1]) + "<|assistant|>\n"
-            )  # TODO: ensure query is user and response is assistant
-            response = conversation_chunks[-1][:-5]  # remove final "</s>\n"
+            conversation_chunks = prompt.split("[/INST] ")
+            query = '[/INST] '.join(conversation_chunks[:-1]) + "[/INST] "
+            response = conversation_chunks[-1]
 
             query = self.tokenizer(query, return_tensors="pt").input_ids[0]
             response = self.tokenizer(response, return_tensors="pt").input_ids[0]
@@ -149,7 +147,7 @@ class Agent(ABC):
         return {}
 
     def train_batch(self, batch_queries, batch_responses, batch_rewards):
-        if len(queries) > self.ppo_config.batch_size:
+        if len(batch_queries) > self.ppo_config.batch_size:
             queries = batch_queries[: self.ppo_config.batch_size]
             responses = batch_responses[: self.ppo_config.batch_size]
             rewards = batch_rewards[: self.ppo_config.batch_size]
