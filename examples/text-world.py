@@ -1,13 +1,12 @@
 import os
 from tqdm import trange
+import wandb
 import textworld.gym
 from llamagym import Agent
 
 from transformers import AutoTokenizer
 from peft import LoraConfig
 from trl import AutoModelForCausalLMWithValueHead
-
-import wandb
 
 
 class TextworldAgent(Agent):
@@ -74,7 +73,9 @@ if __name__ == "__main__":
             for key, value in hyperparams.items()
             if key.startswith("generate/")
         },
-        {"batch_size": hyperparams["batch_size"]},
+        {
+            "batch_size": hyperparams["batch_size"]
+        },  # TODO: figure out minibatch size issue
     )
 
     env_id = textworld.gym.register_game(
@@ -87,7 +88,7 @@ if __name__ == "__main__":
     env = textworld.gym.make(env_id)
 
     for episode in trange(hyperparams["episodes"]):
-        observation, info = env.reset(seed=hyperparams["seed"])
+        observation, info = env.reset()
         env.render()
         done = False
 
@@ -104,7 +105,7 @@ if __name__ == "__main__":
             "message_ct": len(agent.current_episode_messages),
             "episode_messages": agent.current_episode_messages[-1],
         }
-        episode_stats.update(agent.terminate_episode()) # add train stats
+        episode_stats.update(agent.terminate_episode())  # add train stats
         wandb.log(episode_stats)
 
     env.close()
