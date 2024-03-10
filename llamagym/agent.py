@@ -97,7 +97,7 @@ class Agent(ABC):
                 messages[: i + 1], tokenize=False, add_generation_prompt=False
             )
             conversation_chunks = prompt.split("[/INST] ")
-            query = '[/INST] '.join(conversation_chunks[:-1]) + "[/INST] "
+            query = "[/INST] ".join(conversation_chunks[:-1]) + "[/INST] "
             response = conversation_chunks[-1]
 
             query = self.tokenizer(query, return_tensors="pt").input_ids[0]
@@ -135,7 +135,7 @@ class Agent(ABC):
             self.current_batch["queries"].extend(queries)
             self.current_batch["responses"].extend(responses)
             self.current_batch["rewards"].extend(rewards)
-    
+
             if len(self.current_batch["queries"]) >= self.ppo_config.batch_size:
                 train_stats = self.train_batch(
                     self.current_batch["queries"],

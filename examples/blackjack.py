@@ -30,7 +30,7 @@ Decide whether to stay with your current sum by writing "Action: 0" or accept an
                 return 0
             elif "hit" in response.lower():
                 return 1
-        
+
         return 0
 
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
         },
         {
             "batch_size": hyperparams["batch_size"],
-            "mini_batch_size": hyperparams["batch_size"]
+            "mini_batch_size": hyperparams["batch_size"],
         },
     )
     env = gym.make(hyperparams["env"], natural=False, sab=False)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
             observation, reward, terminated, truncated, info = env.step(action)
             agent.assign_reward(reward)
             done = terminated or truncated
-        
+
         episode_stats = {
             "episode": episode,
             "total_return": sum(agent.current_episode_rewards),
