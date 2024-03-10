@@ -41,7 +41,7 @@ class BlackjackAgent(Agent):
         return f"Your current total is {observation[0]}"
 
     def extract_action(self, response: str):
-        return 0 if "stick" in response else 1
+        return 0 if "stay" in response else 1
 ```
 
 Then, define your base LLM (as you would for any fine-tuning job) and instantiate your agent:
