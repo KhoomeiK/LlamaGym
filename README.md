@@ -67,6 +67,11 @@ for episode in trange(5000):
 
 Note: the above code snippets are mildly simplified but a fully working example is available in `examples/blackjack.py`.
 
+## Relevant Work
+- [Grounding Large Language Models with Online Reinforcement Learning](https://github.com/flowersteam/Grounding_LLMs_with_online_RL)
+  - [Lamorel: Language Models for Reinforcement Learning](https://github.com/flowersteam/lamorel)
+- [True Knowledge Comes from Practice: Aligning LLMs with Embodied Environments via Reinforcement Learning](https://github.com/WeihaoTan/TWOSOME)
+
 ## TODO
 - [ ] add toggle for train vs inference mode
 - [ ] set up logging on examples
