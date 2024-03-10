@@ -1,5 +1,7 @@
+import re
 import os
 from tqdm import trange
+import wandb
 import textworld.gym
 from llamagym import Agent
 
@@ -18,9 +20,9 @@ class TextworldAgent(Agent):
         return observation
 
     def extract_action(self, response: str):
-        if "command: " not in response:
-            raise ValueError("No action chosen")
-        command = response.split("command: ")[-1]
+        command_match = re.search(r"(C|c)ommand: (.+?)(?=\n|$)", response)
+        command = command_match.group(2) if command_match else None
+
         return command
 
 
@@ -42,6 +44,7 @@ if __name__ == "__main__":
         "generate/top_k": 0,
         "generate/temperature": 0.9,
     }
+    wandb_run = wandb.init(project=os.environ.get("WANDB_PROJECT"), config=hyperparams)
     device = "cuda:0"
     HF_TOKEN = os.environ.get("HF_TOKEN")
 
@@ -52,7 +55,6 @@ if __name__ == "__main__":
             if key.startswith("lora/")
         }
     )
-
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         pretrained_model_name_or_path=hyperparams["model_name"],
         peft_config=lora_config,
@@ -72,7 +74,10 @@ if __name__ == "__main__":
             for key, value in hyperparams.items()
             if key.startswith("generate/")
         },
-        {"batch_size": hyperparams["batch_size"]},
+        {
+            "batch_size": hyperparams["batch_size"],
+            "mini_batch_size": hyperparams["batch_size"],
+        },
     )
 
     env_id = textworld.gym.register_game(
@@ -85,16 +90,25 @@ if __name__ == "__main__":
     env = textworld.gym.make(env_id)
 
     for episode in trange(hyperparams["episodes"]):
-        observation, info = env.reset(seed=hyperparams["seed"])
+        observation, info = env.reset()
         env.render()
         done = False
 
         while not done:
             action = agent.act(observation)
+            wandb.log({"action": action})
             observation, reward, done, info = env.step(action)
             env.render()
             agent.assign_reward(reward)
 
+        episode_stats = {
+            "episode": episode,
+            "total_return": sum(agent.current_episode_rewards),
+            "message_ct": len(agent.current_episode_messages),
+            "episode_messages": agent.current_episode_messages[-1],
+        }
         train_stats = agent.terminate_episode()
+        episode_stats.update(train_stats)
+        wandb.log(episode_stats)
 
     env.close()

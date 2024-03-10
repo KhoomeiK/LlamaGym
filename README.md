@@ -83,10 +83,3 @@ bibtex
   url          = {https://github.com/KhoomeiK/LlamaGym}
 }
 ```
-
-## TODO
-- [ ] add toggle for train vs inference mode
-- [ ] set up logging on examples
-  - [ ] approx KL, sample completions, sliding window mean reward
-- [ ] understand the PPO logs and fix hyperparams
-- [ ] run wandb hyperparam sweep
