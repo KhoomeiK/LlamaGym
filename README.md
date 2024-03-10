@@ -71,6 +71,7 @@ for episode in trange(5000):
 Some reminders:
 - above code snippets are mildly simplified above but a fully working example is available in [`examples/blackjack.py`](https://github.com/KhoomeiK/LlamaGym/blob/main/examples/blackjack.py)
 - getting online RL to converge is notoriously difficult so you'll have to mess with hyperparameters to see improvement
+  - your model may also benefit from a supervised fine-tuning stage on sampled trajectories before running RL (we may add this feature in the future)
 - our implementation values simplicity so is not as compute efficient as e.g. [Lamorel](https://github.com/flowersteam/lamorel), but easier to start playing around with
 - LlamaGym is a weekend project and still a WIP, but we love contributions!
 
