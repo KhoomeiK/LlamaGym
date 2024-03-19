@@ -1,0 +1,1 @@
+This is for the QA environment and will serve as LLM grader, in order to use it, server.py must be run and your base_url needs to be passed into evaluate_state. Using OpenAI is default behavior but if you have a seperate powerful PC, this server could be used instead of OAI API
