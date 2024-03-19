@@ -1,0 +1,12 @@
+root ::= "{" warmerColder "," reachedGoal "," feedback "}"
+
+warmerColder ::= "\"warmer_colder\":" ws "\"" warmerColderEnum "\""
+warmerColderEnum ::= "hot" | "warmer" | "colder" | "same" | "cold"
+
+reachedGoal ::= "\"reached_goal\":" ws boolean
+boolean ::= "true" | "false"
+
+feedback ::= "\"feedback\":" ws string
+string ::= "\"" ( [^"\\\x7F\x00-\x1F] | "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]) )* "\"" ws
+
+ws ::= ([ \t\n\r]*)
